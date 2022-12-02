@@ -1,4 +1,5 @@
 const User = require("../model/User");
+import asyncHandler from 'express-async-handler';
 
 const getAllUsers = async (req, res, next) =>{
     let users;
@@ -95,22 +96,26 @@ const deleteUser = async(req,res,next) =>{
 
 // get user by id here...
 
-const getUserById = async (req, res, next) =>{
-    const id = req.params.id;
-    let user;
-     try{
-         user = await User.findById(id);
-        
-     } catch (err){
-        return next(err)
-     }
-     // check if the user exist or not
-     if(!user){
-        return res.status(500).json({message: "User not found"});
-     }
-     // if it successfully
-     return res.status(200).json({message: "Found! " + user});
-}
+const getUserById = asyncHandler(
+    async (req, res, next) =>{
+        const id = req.params.id;
+        let user;
+         try{
+             user = await User.findById(id);
+            
+         } catch (err){
+            return next(err)
+         }
+         // check if the user exist or not
+         if(!user){
+            return res.status(500).json({message: "User not found"});
+         }
+         // if it successfully
+         return res.status(200).json({message: "Found! " + user});
+    }
+)
+
+
 // exports all functions to be accessible in other pages of the application
 exports.getAllUsers = getAllUsers;
 exports.addUser = addUser;
